@@ -1,0 +1,51 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenLocal()
+    maven {
+    	url 'http://labs.consol.de/maven/snapshots-repository/'
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:1.6.0")
+    }
+}
+
+tasks.withType (JavaCompile) {
+    options.encoding = propertySourceFileEncoding
+}
+
+
+dependencies {
+   compile group: 'net.serenity-bdd', name: 'serenity-core', version: '1.6.0'
+   compile group: 'net.serenity-bdd', name: 'serenity-junit', version: '1.6.0'
+   compile group: 'net.serenity-bdd', name: 'serenity-cucumber', version: '1.5.9'
+   
+   testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'
+   testCompile 'junit:junit:4.12'
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+tasks.withType(Test) {
+    systemProperty 'webdriver.driver', System.getProperty('webdriver.driver', 'chrome')
+    systemProperty 'tags', System.getProperty('tags', '')
+}
+
+gradle.startParameter.continueOnFailure = true
